@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/standardCalculatoItemr"
+            android:title="Standard" />
+        <item
+            android:id="@+id/scientificCalculatorItem"
+            android:title="Scientific" />
+        <item
+            android:id="@+id/programmerCalculatorItem"
+            android:title="Programmer" />
+    </group>
+
+    <!--<item android:title="Converter">-->
+
+        <!--<group>-->
+            <!--<item-->
+                <!--android:id="@+id/converterItem"-->
+                <!--android:title="Currency" />-->
+            <!--<item-->
+                <!--android:id="@+id/weightItem"-->
+                <!--android:title="Weight" />-->
+            <!--<item-->
+                <!--android:id="@+id/massItem"-->
+                <!--android:title="Mass" />-->
+        <!--</group>-->
+    <!--</item>-->
+
+</menu>
