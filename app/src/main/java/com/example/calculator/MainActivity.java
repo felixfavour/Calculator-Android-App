@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -37,9 +38,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //UI Fields
     LinearLayout resultViewLayout;
     LinearLayout buttonPadLayout;
-    EditText resultView;
-    ButtonResource resource;
+    TextView resultView;
     String resultViewContent;
+    DisplayMetrics displayMetrics;
 
     //Button fields
     Button ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, DOT, EQUALS, PLUS, TIMES, DIVIDE, SUBTRACT, LOG, SIN, COS, TAN, SQR_ROOT, BACKSPACE;
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //CalculatorMechanism Fields
     Pattern resultView_pattern;
     Matcher resultView_matcher;
-    int result;
+    double result;
     ArrayList<String> list;
 
     @Override
@@ -65,8 +66,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        //UI Interaction
+
         // Object Creation
-        resultView = (EditText) findViewById(R.id.resultView);
+        resultView = (TextView) findViewById(R.id.resultView);
 
         ZERO = (Button) findViewById(R.id.number0);
         ONE = (Button) findViewById(R.id.number1);
@@ -159,28 +162,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
                 resultViewContent = resultView.getText().toString();
-                resultView_pattern = Pattern.compile("([\\d]+)|([-+x÷])");
+                resultView_pattern = Pattern.compile("([\\dA-Z√ ]+)|([-+x÷])");
                 resultView_matcher = resultView_pattern.matcher(resultViewContent);  //error here
                 while (resultView_matcher.find()) {
-                    list.add(resultView_matcher.group());  //error here
+                    if (!(resultView_matcher.group().contains("√ ") || resultView_matcher.group().contains("LOG ") || resultView_matcher.group().contains("SIN ")
+                            || resultView_matcher.group().contains("COS ")|| resultView_matcher.group().contains("TAN "))) {
+                        list.add(resultView_matcher.group());
+                    }
+                    else if (resultView_matcher.group().contains("√ ")) {
+                        String rootValue = resultView_matcher.group().substring(resultView_matcher.group().indexOf(" ") + 1);
+                        list.add(String.valueOf(Math.sqrt(Double.valueOf(rootValue))));
+                    }
+                    else if (resultView_matcher.group().contains("LOG ")) {
+                        String logValue = resultView_matcher.group().substring(resultView_matcher.group().indexOf(" ")+1);
+                        list.add(String.valueOf(Math.log(Math.toRadians(Double.valueOf(logValue)))));
+                    }
+                    else if (resultView_matcher.group().contains("SIN ")) {
+                        String sinValue = resultView_matcher.group().substring(resultView_matcher.group().indexOf(" ")+1);
+                        list.add(String.valueOf(Math.sin(Math.toRadians(Double.valueOf(sinValue)))));
+                    }
+                    else if (resultView_matcher.group().contains("COS ")) {
+                        String cosValue = resultView_matcher.group().substring(resultView_matcher.group().indexOf(" ")+1);
+                        list.add(String.valueOf(Math.cos(Math.toRadians(Double.valueOf(cosValue)))));
+                    }
+                    else if (resultView_matcher.group().contains("TAN ")) {
+                        String tanValue = resultView_matcher.group().substring(resultView_matcher.group().indexOf(" ")+1);
+                        list.add(String.valueOf(Math.tan(Math.toRadians(Double.valueOf(tanValue)))));
+                    }
                 }
 
-                result = Integer.valueOf(list.get(0));
+                result = Double.valueOf(list.get(0));
 
-                if (result == Integer.valueOf(list.get(0))) {
-                    for (int i = 0; i<list.size()-1; i++) {
-                        if(list.get(i).equals("+")){
-                            result += Integer.valueOf(list.get(i+1));
-                        }
-                        else if(list.get(i).equals("-")){
-                            result -= Integer.valueOf(list.get(i+1));
-                        }
-                        else if(list.get(i).equals("x")){
-                            result *= Integer.valueOf(list.get(i+1));
-                        }
-                        else if(list.get(i).equals("÷")){
-                            result /= Integer.valueOf(list.get(i+1));
-                        }
+                for (int i = 0; i<list.size()-1; i++) {
+                    switch (list.get(i)) {
+                        case "+":
+                            result += Double.valueOf(list.get(i + 1));
+                            break;
+                        case "-":
+                            result -= Double.valueOf(list.get(i + 1));
+                            break;
+                        case "x":
+                            result *= Double.valueOf(list.get(i + 1));
+                            break;
+                        case "÷":
+                            result /= Double.valueOf(list.get(i + 1));
+                            break;
                     }
                 }
                 resultView.setText(String.valueOf(result));

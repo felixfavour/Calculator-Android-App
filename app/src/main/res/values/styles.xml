@@ -13,6 +13,19 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="padButtons">
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">#FFF</item>
+        <item name="android:background">#2F375A</item>
+    </style>
+
+    <style name="sciCalcButtons">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#FFF</item>
+        <item name="android:background">#2447AD</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
