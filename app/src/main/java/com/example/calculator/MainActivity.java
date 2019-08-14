@@ -71,28 +71,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Object Creation
         resultView = (TextView) findViewById(R.id.resultView);
 
-        ZERO = (Button) findViewById(R.id.number0);
-        ONE = (Button) findViewById(R.id.number1);
-        TWO = (Button) findViewById(R.id.number2);
-        THREE = (Button) findViewById(R.id.number3);
-        FOUR = (Button) findViewById(R.id.number4);
-        FIVE = (Button) findViewById(R.id.number5);
-        SIX = (Button) findViewById(R.id.number6);
-        SEVEN = (Button) findViewById(R.id.number7);
-        EIGHT = (Button) findViewById(R.id.number8);
-        NINE = (Button) findViewById(R.id.number9);
-        DOT = (Button) findViewById(R.id.numberDot);
-        PLUS = (Button) findViewById(R.id.operatorAddition);
-        EQUALS = (Button) findViewById(R.id.operatorEquality);
-        TIMES = (Button) findViewById(R.id.operatorMultiplication);
-        DIVIDE = (Button) findViewById(R.id.operatorDivision);
-        SUBTRACT = (Button) findViewById(R.id.operatorSubtraction);
-        LOG = (Button) findViewById(R.id.operatorLog);
-        SIN = (Button) findViewById(R.id.operatorSin);
-        COS = (Button) findViewById(R.id.operatorCos);
-        TAN = (Button) findViewById(R.id.operatorTan);
-        SQR_ROOT = (Button) findViewById(R.id.operatorSqrRoot);
-        BACKSPACE = (Button) findViewById(R.id.backspace);
+        ZERO = findViewById(R.id.number0);
+        ONE = findViewById(R.id.number1);
+        TWO = findViewById(R.id.number2);
+        THREE = findViewById(R.id.number3);
+        FOUR = findViewById(R.id.number4);
+        FIVE = findViewById(R.id.number5);
+        SIX = findViewById(R.id.number6);
+        SEVEN = findViewById(R.id.number7);
+        EIGHT = findViewById(R.id.number8);
+        NINE = findViewById(R.id.number9);
+        DOT = findViewById(R.id.numberDot);
+        PLUS = findViewById(R.id.operatorAddition);
+        EQUALS = findViewById(R.id.operatorEquality);
+        TIMES = findViewById(R.id.operatorMultiplication);
+        DIVIDE = findViewById(R.id.operatorDivision);
+        SUBTRACT = findViewById(R.id.operatorSubtraction);
+        LOG = findViewById(R.id.operatorLog);
+        SIN = findViewById(R.id.operatorSin);
+        COS = findViewById(R.id.operatorCos);
+        TAN = findViewById(R.id.operatorTan);
+        SQR_ROOT = findViewById(R.id.operatorSqrRoot);
+        BACKSPACE = findViewById(R.id.backspace);
 
         CALC_BUTTONS = new Button[]{ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, DOT, PLUS, TIMES, DIVIDE, SUBTRACT};
         SCI_CALC_BUTTONS = new Button[]{LOG, SIN, COS, TAN, SQR_ROOT};
@@ -162,8 +162,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
                 resultViewContent = resultView.getText().toString();
-                resultView_pattern = Pattern.compile("([\\dA-Z√ ]+)|([-+x÷])");
-                resultView_matcher = resultView_pattern.matcher(resultViewContent);  //error here
+                resultView_pattern = Pattern.compile("([\\d.A-Z√\\s]+)|([-+x÷])");
+                resultView_matcher = resultView_pattern.matcher(resultViewContent);
                 while (resultView_matcher.find()) {
                     if (!(resultView_matcher.group().contains("√ ") || resultView_matcher.group().contains("LOG ") || resultView_matcher.group().contains("SIN ")
                             || resultView_matcher.group().contains("COS ")|| resultView_matcher.group().contains("TAN "))) {
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                     else if (resultView_matcher.group().contains("LOG ")) {
                         String logValue = resultView_matcher.group().substring(resultView_matcher.group().indexOf(" ")+1);
-                        list.add(String.valueOf(Math.log(Math.toRadians(Double.valueOf(logValue)))));
+                        list.add(String.valueOf(Math.log10(Double.valueOf(logValue))));
                     }
                     else if (resultView_matcher.group().contains("SIN ")) {
                         String sinValue = resultView_matcher.group().substring(resultView_matcher.group().indexOf(" ")+1);
@@ -183,33 +183,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                     else if (resultView_matcher.group().contains("COS ")) {
                         String cosValue = resultView_matcher.group().substring(resultView_matcher.group().indexOf(" ")+1);
-                        list.add(String.valueOf(Math.cos(Math.toRadians(Double.valueOf(cosValue)))));
+                        if (Integer.valueOf(cosValue) < 90) {  //MATH ERROR EXCEPTIONS
+                            list.add(String.valueOf(Math.cos(Math.toRadians(Double.valueOf(cosValue)))));
+                        }
+                        else {
+                            list.add("MErr");
+                        }
                     }
-                    else if (resultView_matcher.group().contains("TAN ")) {
+                    else if (resultView_matcher.group().contains("TAN ")) {  //MATH ERROR EXCEPTIONS
                         String tanValue = resultView_matcher.group().substring(resultView_matcher.group().indexOf(" ")+1);
-                        list.add(String.valueOf(Math.tan(Math.toRadians(Double.valueOf(tanValue)))));
+                        if (Integer.valueOf(tanValue) <= 45) {
+                            list.add(String.valueOf(Math.tan(Math.toRadians(Double.valueOf(tanValue)))));
+                        }
+                        else {
+                            list.add("MErr");
+                        }
                     }
                 }
 
-                result = Double.valueOf(list.get(0));
-
-                for (int i = 0; i<list.size()-1; i++) {
-                    switch (list.get(i)) {
-                        case "+":
-                            result += Double.valueOf(list.get(i + 1));
-                            break;
-                        case "-":
-                            result -= Double.valueOf(list.get(i + 1));
-                            break;
-                        case "x":
-                            result *= Double.valueOf(list.get(i + 1));
-                            break;
-                        case "÷":
-                            result /= Double.valueOf(list.get(i + 1));
-                            break;
+                if(!list.contains("MErr")) {
+                    result = Double.valueOf(list.get(0));
+                    for (int i = 0; i<list.size()-1; i++) {
+                        switch (list.get(i)) {
+                            case "+":
+                                result += Double.valueOf(list.get(i + 1));
+                                break;
+                            case "-":
+                                result -= Double.valueOf(list.get(i + 1));
+                                break;
+                            case "x":
+                                result *= Double.valueOf(list.get(i + 1));
+                                break;
+                            case "÷":
+                                result /= Double.valueOf(list.get(i + 1));
+                                break;
+                        }
                     }
+                    resultView.setText(String.valueOf(result));
+                } else {
+                    resultView.setText(String.valueOf("Math Error"));
                 }
-                resultView.setText(String.valueOf(result));
+
                 list.clear();
             }
         });
