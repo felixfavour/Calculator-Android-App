@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
                 resultViewContent = resultView.getText().toString();
-                resultView_pattern = Pattern.compile("([\\d.A-Z√\\s]+)|([-+x÷])");
+                resultView_pattern = Pattern.compile("((?:^[-+]|)[\\d.A-Z√\\s]+)|([-+÷x])");
                 resultView_matcher = resultView_pattern.matcher(resultViewContent);
                 while (resultView_matcher.find()) {
                     if (!(resultView_matcher.group().contains("√ ") || resultView_matcher.group().contains("LOG ") || resultView_matcher.group().contains("SIN ")
@@ -219,7 +219,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 break;
                         }
                     }
-                    resultView.setText(String.valueOf(result));
+                    if(String.valueOf(result).endsWith(".0")) {
+                        resultView.setText(String.valueOf(result).substring(0, String.valueOf(result).indexOf(".")));
+                    } else {
+                        resultView.setText(String.valueOf(result));
+                    }
                 } else {
                     resultView.setText(String.valueOf("Math Error"));
                 }
